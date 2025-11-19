@@ -1,0 +1,21 @@
+# venv
+venv/
+.env
+*.pyc
+__pycache__/
+
+# editor/IDE
+.vscode/
+.idea/
+
+# cache
+instance/
+*.db
+*.sqlite3
+
+# OS
+.DS_Store
+Thumbs.db
+
+# logs
+*.log
