@@ -1,0 +1,21 @@
+# insert 
+{
+    "doc_id": "5",
+    "changes": {
+        "type": "insert",
+        "character": "world",
+        "position": 6,
+        "len": 5
+    }
+}
+
+# deletion
+
+{
+    "doc_id": "5",
+    "changes": {
+        "type": "delete",
+        "position": 0,
+        "len": 5
+    }
+}

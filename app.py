@@ -10,16 +10,23 @@ socketio = SocketIO(app,async_mode='eventlet', cors_allowed_origins="*",logger=T
 # in-memory doc storage (simple)
 documents = {}
 
-def updateDoc(doc_id, changes_map):
+def updateDoc(doc_id, change):
     if doc_id not in documents:
-        documents[doc_id] = { "content": "", "gridMap": {} }
+        documents[doc_id] = {"content": ""}
 
-    for key, value in changes_map.items():
-        if value is None:
-            if key in documents[doc_id]['gridMap']:
-                del documents[doc_id]['gridMap'][key]
-        else:
-            documents[doc_id]['gridMap'][key] = value
+    text = documents[doc_id]["content"]
+
+    if change["type"] == "insert":
+        pos = change["position"]
+        text = text[:pos] + change["character"] + text[pos:]
+
+    elif change["type"] == "delete":
+        pos = change["position"]
+        length = change["len"]
+        text = text[:pos] + text[pos + length:]
+
+    documents[doc_id]["content"] = text
+
 
 @app.route("/", methods=["GET"])
 def create():
@@ -29,7 +36,6 @@ def create():
 def create_doc(doc_id):
     documents[doc_id] = {
                             "content": "",
-                            "gridMap": {}
                         }
     return {"status": True, "message": "Doc created"}
 
@@ -37,10 +43,10 @@ def create_doc(doc_id):
 def handle_join(data):
     doc_id = data["doc_id"]
     join_room(doc_id)
-    create_doc(doc_id)
+    if doc_id not in documents:
+        create_doc(doc_id)
     emit("load", {
         "content": documents[doc_id]["content"],
-        "gridMap": documents[doc_id]["gridMap"]
     })
 
 @socketio.on("edit")
@@ -48,6 +54,7 @@ def handle_edit(data):
     doc_id = data["doc_id"]
     changes = data["changes"] 
     updateDoc(doc_id, changes)
+    # print("-->",documents[doc_id])
     emit("update", changes, room=doc_id, include_self=False)
 
 if __name__ == "__main__":
