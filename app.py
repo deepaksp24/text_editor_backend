@@ -29,7 +29,7 @@ def updateDoc(doc_id, change):
 
 
 @app.route("/", methods=["GET"])
-def create():
+def check():
     return {"status": True, "message": "sever on"}
 
 @app.route("/create", methods=["POST"])
@@ -54,7 +54,7 @@ def handle_edit(data):
     doc_id = data["doc_id"]
     changes = data["changes"] 
     updateDoc(doc_id, changes)
-    # print("-->",documents[doc_id])
+    print("-->",documents[doc_id])
     emit("update", changes, room=doc_id, include_self=False)
 
 if __name__ == "__main__":
