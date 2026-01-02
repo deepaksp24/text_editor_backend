@@ -16,9 +16,9 @@ state2 = {
     "version" : 1,
     "changes": {
         "type": "insert",
-        "character": "e",
+        "character": "ey",
         "position": 1,
-        "len": 1
+        "len": 2
     }
 }
 
@@ -33,6 +33,17 @@ state3 = {
     }
 }
 
+state4 = {
+    "doc_id": "1",
+    "version" : 1,
+    "changes": {
+        "type": "insert",
+        "character": "hi",
+        "position": 0,
+        "len": 2
+    }
+}
+
 
 def updateDoc(doc_id, change,version):
     if doc_id not in documents:
@@ -40,15 +51,17 @@ def updateDoc(doc_id, change,version):
         versioHistory[doc_id] = {}
 
     text = documents[doc_id]["content"]
+    currentVersion = documents[doc_id]["version"]
     mod_pos = 0
-    if version < documents[doc_id]["version"]:
-        mod_pos = op(doc_id,change,version,documents[doc_id]["version"],versioHistory)
+    if version < currentVersion:
+        mod_pos = op(doc_id,change,version,currentVersion,versioHistory)
 
     if change["type"] == "insert":
-        versioHistory[doc_id][version] = change["len"]
+        
         pos = mod_pos if mod_pos else change["position"]
         text = text[:pos] + change["character"] + text[pos:]
-        documents[doc_id]["version"] += 1
+        documents[doc_id]["version"] +=   1
+        versioHistory[doc_id][currentVersion] = change["len"]
 
     elif change["type"] == "delete":
         pos = change["position"]
@@ -77,6 +90,7 @@ def op(doc_id,change,version,currentVersion,versioHistory):
 handle_edit(state1)
 handle_edit(state2)
 handle_edit(state3)
+handle_edit(state4)
 
 print(versioHistory)
 print(documents)
