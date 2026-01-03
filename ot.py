@@ -61,7 +61,7 @@ def updateDoc(doc_id, change,version):
         pos = mod_pos if mod_pos else change["position"]
         text = text[:pos] + change["character"] + text[pos:]
         documents[doc_id]["version"] +=   1
-        versioHistory[doc_id][currentVersion] = change["len"]
+        versioHistory[doc_id][currentVersion] = [change["len"],change["position"]]
 
     elif change["type"] == "delete":
         pos = change["position"]
@@ -82,7 +82,8 @@ def op(doc_id,change,version,currentVersion,versioHistory):
     print(versioHistory)
     for ver in range(version,currentVersion):
         print(ver)
-        postion += versioHistory[doc_id][ver]
+        if versioHistory[doc_id][ver][1] <= change['position']:
+            postion += versioHistory[doc_id][ver][0]
         print("mod",postion)
     return change['position'] +  postion
 
