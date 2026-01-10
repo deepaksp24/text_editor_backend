@@ -1,6 +1,7 @@
 # insert 
 {
     "doc_id": "5",
+    "version" : 0,
     "changes": {
         "type": "insert",
         "character": "world",
@@ -13,6 +14,7 @@
 
 {
     "doc_id": "5",
+    "version" : 8,
     "changes": {
         "type": "delete",
         "position": 0,

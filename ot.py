@@ -44,6 +44,16 @@ state4 = {
     }
 }
 
+state5 = {
+    "doc_id": "1",
+    "version" : 1,
+    "changes": {
+        "type": "delete",
+        "position": 2, # first l from 'hello'
+        "len": 1
+    }
+}
+
 
 def updateDoc(doc_id, change,version):
     if doc_id not in documents:
@@ -64,9 +74,11 @@ def updateDoc(doc_id, change,version):
         versioHistory[doc_id][currentVersion] = [change["len"],change["position"]]
 
     elif change["type"] == "delete":
-        pos = change["position"]
+        pos = mod_pos if mod_pos else change["position"]
         length = change["len"]
-        text = text[:pos] + text[pos + length:]
+        text = text[:pos] +  text[pos + length:]
+        documents[doc_id]["version"] +=   1
+        versioHistory[doc_id][currentVersion] = [change["len"],-change["position"]]
 
     documents[doc_id]["content"] = text
 
@@ -92,6 +104,7 @@ handle_edit(state1)
 handle_edit(state2)
 handle_edit(state3)
 handle_edit(state4)
+handle_edit(state5)
 
 print(versioHistory)
 print(documents)
